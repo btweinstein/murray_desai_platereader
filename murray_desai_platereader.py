@@ -7,12 +7,6 @@ import skimage.io
 import seaborn as sns # I use seaborn for plotting as it makes things easier to understand
 sns.set_context('poster', font_scale = 1.25)
 
-
-#import seaborn as sns # I import seaborn so the plots are nice
-# sns.set_context('poster', font_scale=1.25)
-
-from matplotlib.colors import LogNorm
-
 LOWERCASE_TO_INT = 96
 
 class PlateReader_Experiment():
