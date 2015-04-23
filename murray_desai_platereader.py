@@ -21,11 +21,10 @@ class PlateReader_Experiment():
 
     def get_table(self):
         column_int = ord(self.column_str) - LOWERCASE_TO_INT # Converts characters into int
-        row = 2
 
         # Excel starts at 1 indexing, so adjust both by one (python starts at zero)
         column_int -= 1
-        row -= 1
+        row = self.row - 1
 
         # Import the excel file
         excel_table = pd.read_excel(self.excel_path, header=None)
