@@ -8,5 +8,7 @@ setup(
     license='',
     author='Bryan Weinstein',
     author_email='bweinstein@seas.harvard.edu',
-    description='Used by the murray and desai labs at Harvard to analyze plate reader data'
+    description='Used by the murray and desai labs at Harvard to analyze plate reader data',
+    install_requires = ['numpy', 'pandas', 'matplotlib', 'seaborn',
+                        'skimage']
 )
