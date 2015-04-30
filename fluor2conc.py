@@ -11,8 +11,6 @@ parser.add_argument('-s2', '--standard_2_position', help = 'Position of standard
 
 parsed_info = parser.parse_args()
 
-print parsed_info
-
 # Now parse the inputs
 file_name = parsed_info.filename
 table_position = parsed_info.table_position
@@ -34,6 +32,7 @@ def get_string_then_digits(input_string):
     if match:
         items = match.groups()
         # Convert second piece to number
+        items = list(items)
         items[1] = int(items[1])
     return items
 
