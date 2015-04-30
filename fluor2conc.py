@@ -1,6 +1,7 @@
 import argparse as ap
 import re
 import sys
+import os
 
 ######### Definitions from previous file so everything is one place #######
 import numpy as np
@@ -103,15 +104,15 @@ parsed_info = parser.parse_args()
 
 # Now parse the inputs
 file_name = parsed_info.filename
-table_position = parsed_info.table_position
-if table_position is None:
-    table_position = 'A1'
-low_fluor_position = parsed_info.standard_1_position
-if low_fluor_position is None:
-    low_fluor_position = 'A1'
-high_fluor_position = parsed_info.standard_2_position
-if high_fluor_position is None:
-    high_fluor_position = 'B1'
+table_position_str = parsed_info.table_position
+if table_position_str is None:
+    table_position_str = 'A1'
+low_fluor_position_str = parsed_info.standard_1_position
+if low_fluor_position_str is None:
+    low_fluor_position_str = 'A1'
+high_fluor_position_str = parsed_info.standard_2_position
+if high_fluor_position_str is None:
+    high_fluor_position_str = 'B1'
 
 
 # Parse the strings
@@ -127,16 +128,24 @@ def get_string_then_digits(input_string):
     return items
 
 
-table_position = get_string_then_digits(table_position)
-
+table_position = get_string_then_digits(table_position_str)
 if len(table_position[0]) > 1:
     print 'pls organize ur excel file, y r u in AA'
     sys.exit(1)
 
-low_fluor_position = get_string_then_digits(low_fluor_position)
-high_fluor_position = get_string_then_digits(high_fluor_position)
+low_fluor_position = get_string_then_digits(low_fluor_position_str)
+high_fluor_position = get_string_then_digits(high_fluor_position_str)
 
 experiment = PlateReader_Experiment(file_name, table_position, low_fluor_position, high_fluor_position)
 conc = experiment.get_concentration()
 
-print conc
+
+filename_without_extension = os.path.split(file_name)[0]
+output_filename = filename_without_extension + '/conc_' + table_position_str
+
+conc.to_csv(output_filename + '.csv', sep='\t', header=False, index=False)
+
+def float_formatter(input_float):
+    return str(round(input_float, 2))
+
+conc.to_html(output_filename + '.html', float_format=float_formatter)
