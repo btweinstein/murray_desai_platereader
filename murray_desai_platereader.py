@@ -11,13 +11,18 @@ LOWERCASE_TO_INT = 96
 
 class PlateReader_Experiment():
 
-    def __init__(self, excel_path, column_str, row, well_rows = 8, well_columns=12):
+    def __init__(self, excel_path, table_position, f_low_position, f_high_position, high_dna_concentration=10,
+                 well_rows = 8, well_columns=12):
         self.excel_path = excel_path
-        self.column_str = column_str.lower() # Always lower case for consistency
-        self.row = row
+        self.column_str = table_position[0].lower() # Always lower case for consistency
+        self.row = table_position[1]
 
         self.well_rows = well_rows
         self.well_columns = well_columns
+
+        self.f_low_position = f_low_position
+        self.f_high_position = f_high_position
+        self.high_dna_concentration = high_dna_concentration
 
     def get_table(self):
         column_int = ord(self.column_str) - LOWERCASE_TO_INT # Converts characters into int
@@ -40,6 +45,17 @@ class PlateReader_Experiment():
         table.index = row_names
 
         return table
+
+    def get_concentration(self):
+        """Returns concentration in units of ng/uL"""
+        table = self.get_table()
+
+        f_low = table.loc[self.f_low_position[0], self.f_low_position[1]]
+        f_high = table.loc[self.f_high_position[0], self.f_high_position[1]]
+
+        conc = ((table - f_low)/(f_high - f_low))*self.high_dna_concentration
+
+        return conc
 
     def plot_table_as_heatmap(self, intensity_min = 10**4, intensity_max = 10**9):
         table = self.get_table()
