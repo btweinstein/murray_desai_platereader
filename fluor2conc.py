@@ -37,8 +37,18 @@ class PlateReader_Experiment():
         column_int -= 1
         row = self.row - 1
 
-        # Import the excel file
+        # Import the excel file...always import the correct # of rows & columns
         excel_table = pd.read_excel(self.excel_path, header=None)
+        # If the user was a potato and did not label all of their columns, adjust the table
+        excel_table = excel_table.iloc[row:(row + self.well_rows)]
+
+        if excel_table.shape[1] != self.well_columns:
+            num_columns_to_add = self.well_columns - excel_table.shape[1]
+            print num_columns_to_add
+            nan_columns = np.ones((excel_table.shape[0], num_columns_to_add))
+            nan_columns = pd.DataFrame(nan_columns)
+            excel_table = pd.concat((excel_table, nan_columns), axis=1)
+
         # Import the desired table
         table = excel_table.iloc[row:(row+self.well_rows), column_int:(column_int+self.well_columns)]
 

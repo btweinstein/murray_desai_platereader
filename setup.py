@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='murray_desai_platereader',
-    version='0.2',
+    version='0.25',
     packages=[''],
     url='https://github.com/btweinstein/murray_desai_platereader',
     license='',
