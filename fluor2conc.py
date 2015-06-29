@@ -39,13 +39,27 @@ class PlateReader_Experiment():
 
         # Import the excel file...always import the correct # of rows & columns
         excel_table = pd.read_excel(self.excel_path, header=None)
-        # If the user was a potato and did not label all of their columns, this will not work correctly.
-        # Nor if they did not label all of their rows. So make them do both.
+        # If the user was a potato and did not label all of their columns, we embed their array in an array
+        # of the correct size. It is better if the user labels to prevent errors, however.
+
+        finish_row = row + self.well_rows
+        if finish_row > excel_table.shape[0]:
+            finish_row = excel_table.shape[0]
+        finish_column = column_int + self.well_columns
+        if finish_column > excel_table.shape[1]:
+            finish_column = excel_table.shape[1]
 
         # Import the desired table
-        table = excel_table.iloc[row:(row+self.well_rows), column_int:(column_int+self.well_columns)]
+        table = excel_table.iloc[row:finish_row, column_int:finish_column]
 
-        # Label the table nicely
+        # If the table is not the correct size, embed in the correct size table
+        if (table.shape[0] != self.well_rows) or (table.shape[1] != self.well_columns):
+            correct_size_table = np.nan*np.ones((self.well_rows, self.well_columns))
+            correct_size_table[0:table.shape[0], 0:table.shape[1]] = table
+            table = correct_size_table
+            table = pd.DataFrame(table)
+
+        # Label the table nicely...always assume that you start in the upper left corner.
         columns = np.arange(1, self.well_columns + 1)
         rows = np.arange(1, self.well_rows + 1) + LOWERCASE_TO_INT
         row_names = [chr(z).upper() for z in rows]
